@@ -1,16 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
+﻿using AppleTV.ViewModels;
+using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -22,9 +12,23 @@ namespace AppleTV
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        private MainPageViewModel ViewModel = new MainPageViewModel();
+
         public MainPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
+            DataContext = ViewModel = new MainPageViewModel();
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            ViewModel.Setup().ContinueWith(t => { }, TaskContinuationOptions.OnlyOnFaulted);
+            base.OnNavigatedTo(e);
+        }
+
+        private void Page_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
+        {
+            ViewModel.NextCommand.Execute(null);
         }
     }
 }
